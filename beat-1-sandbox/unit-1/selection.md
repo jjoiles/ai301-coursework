@@ -2,12 +2,7 @@
 
 Path: `beat-1-sandbox/unit-1/selection.md`
 
-Record of the issue carried into Unit 2, and of the evaluation runs that produced
-`eval-run.txt`. This file is graded at the path above; a copy kept anywhere else in
-the repository is not read.
-
-Complete every labelled field below. Each is graded on its own; content placed under the
-wrong label is not graded.
+Record of the issue carried into Unit 2, and of the evaluation runs that produced `eval-run.txt`. This file is graded at the path above; a copy kept anywhere else in the repository is not read.
 
 ---
 
@@ -15,72 +10,60 @@ wrong label is not graded.
 
 **Issue link**
 
-[The individual Path Review issue page. A link to the repository or the issue list
-does not satisfy this field.]
+https://github.com/codepath/pathreview-ai301-fa26-howard/issues/57
 
 **Verdict output**
 
-[Your skill's live-mode output for this issue, pasted verbatim and ending with the
-fenced JSON verdict block. A summary does not satisfy this field.]
+All required checks pass, so the verdict is accept. On fit: this is a good match for you — the repro is handed to you, the fix is path-filtering logic in a single tool file, and node_modules/ and build/ are artifacts you already know from JS and React work, so no unfamiliar subsystem to learn. When you open the PR, the template requires all five CI jobs green, and the two named tests should go from failing to passing without disturbing the rest of tests/unit/test_tech_detector.py.
 
-**The verdict must record `accept` for this issue.** Choose an issue your own skill
-accepts. If your skill rejects every candidate you try, that is a signal about your
-rubric rather than about the issues: revise it and re-run — retries are unlimited and a
-partial re-run costs about $0.20 — or run the skill on different candidates. Output
-recording `reject` for the issue you chose earns no credit for this field.
-
-```
-paste the output here, including the closing JSON block
-```
+{
+  "item": "https://github.com/codepath/pathreview-ai301-fa26-howard/issues/57",
+  "checks": [
+    {"name": "Maintainer activity", "grade": "pass", "evidence": "All 5 latest main commits human-authored by Aburke225; newest 2026-09-16T21:42:18Z, 12 days before the 2026-09-28 capture date (<180)."},
+    {"name": "Repository in use", "grade": "pass", "evidence": "archived: false; last push 2026-09-16T21:50:23Z, 12 days before capture (<365); no releases published."},
+    {"name": "Newcomer-sized scope", "grade": "pass", "evidence": "One bounded change: \"tech_detector.py does not exclude node_modules/ or build/ paths\", with a repro snippet and two named failing tests (test_node_modules_excluded, test_build_directory_excluded); labeled 'good first issue', 'tier-1'."},
+    {"name": "Issue availability", "grade": "pass", "evidence": "assignees: []; comments: 0; timeline shows no cross-referenced or linked PRs, and all 4 repo PRs reference other issues (#61, #72, #60, #68)."},
+    {"name": "Contribution policy", "grade": "pass", "evidence": "docs/CONTRIBUTING.md contains no AI-generated/AI-assisted restriction; PR template and README state none either."}
+  ],
+  "verdict": "accept"
+}
 
 ---
 
 ## Eval iterations
 
-Quote source text directly in each field below. Paraphrase does not satisfy them.
-
 **Run history**
 
-[The agreement score of each run you did, in order. A single run is a complete answer if
-only one run occurred. **The last score in your list must match the agreement line in the
-`eval-run.txt` you committed** — that file is the record of your final run.]
+Run 1: agreement: 17/20 scored items (bar: 18/20: below the bar)
+
+Run 2: agreement: 18/20 scored items (bar: 18/20: PASS)
 
 **Issue analysis**
 
-[One scored issue, identified by id (`issue-01` through `issue-20`; the `calib-`
-issues are not scored). State your rubric's decision, the gold label, and the
-reasoning that produced your rubric's result.]
+issue-19 — My rubric's decision was reject, while the gold label was accept. The evaluation output stated: "failed: Newcomer-sized scope." The issue described multiple potential causes and several implementation suggestions, so the Newcomer-sized scope check treated it as broader than one bounded contribution.
 
 **Check rationale**
 
-[One check from the `rubric.md` uploaded to `tools/issue-select/`, quoted as it is
-currently written, with the reasoning behind its current form.]
+"Pass if the issue requests one bounded contribution and is not an umbrella/tracking issue, pure usage/support question, unresolved design discussion, or a change that a maintainer explicitly says requires core-internal or architectural work."
+
+I kept this check because the purpose of the skill is to identify an appropriate first contribution. Requiring one bounded contribution helps prevent a newcomer from selecting an issue whose implementation scope is unclear, architectural, or substantially larger than it first appears.
 
 **Trade-offs**
 
-[What the quoted check gives up. Any one of these is a complete answer: an issue whose
-result it changes, a canary you re-ran with `--only`, a case you accept it will miss, or a
-stated reason nothing changed elsewhere. "Nothing changed, and here is how I know" earns
-the point in full when the reason follows.]
+This check can be conservative. In the final evaluation, issue-19 had a gold label of accept, but my rubric rejected it because it failed the Newcomer-sized scope check. I accept this trade-off because I would rather reject a potentially manageable issue than recommend an issue whose scope may be too broad for a first contribution.
 
 ---
 
 ## Selection rationale
 
-Graded on whether all three are answered, in your own words. Not on how good the
-reasoning is, and not on length — a short honest answer to each earns the full marks.
-This is also the basis for the claim comment you write in Unit 2.
-
 **Selection rationale**
 
-[Answer all three:
+1. Issue #57 fits my interests because it is a clearly scoped programming and debugging task. It gives me an opportunity to work within an existing codebase without requiring a major architectural change, and its tier-1/good-first-issue scope makes it realistic for the time available.
 
-1. The issue's fit to your interests and to the time available.
-2. What the verdict identified correctly, and what you weighed that the rubric could
-   not.
-3. The anticipated difficulty in claiming it.]
+2. The verdict correctly identified that the repository is active, the issue is bounded, the contribution policy is acceptable, and there is no active implementation blocking the issue. Beyond the rubric, I also considered whether the task sounded understandable and useful for improving my debugging and codebase-navigation experience.
+
+3. I anticipate that claiming the issue should be straightforward because the live evaluation found no assignee or active pull request implementing #57. I would still check the issue immediately before claiming it in Unit 2 in case another student begins working on it.
 
 ---
 
-Related paths: `eval-run.txt` in this directory; your skill's files in
-`tools/issue-select/`.
+Related paths: `eval-run.txt` in this directory; your skill's files in `tools/issue-select/`.
