@@ -1,72 +1,34 @@
-
 # PR Precheck Rubric
 
 ## Purpose
 
-Determine whether one pull request package is ready to submit by checking its issue alignment, implementation plan, code changes, test evidence, and PR description.
+Determine whether one pull request package is ready to submit by checking its issue alignment, implementation plan, code changes, test evidence, PR description, and applicable repository standards.
 
-Grade every check using evidence from the package, not assumptions.
+Evaluate each check using evidence supplied in the package. Do not invent facts, requirements, or repository policies.
 
-## Check 1: Issue Alignment
+## Evaluation Checks
 
-**Pass:** The PR identifies the issue it addresses, and the changes directly address the behavior or requirements stated in that issue.
+The following table is the **single authoritative definition** of the six required checks. Apply each check's pass, fail, and unclear criteria.
 
-**Fail:** The PR addresses a different issue, contradicts the issue requirements, or includes unrelated changes without justification.
-
-**Unclear:** The issue or its requirements cannot be identified from the available evidence.
-
-## Check 2: Plan and Diff Alignment
-
-**Pass:** The diff implements the stated plan, or any deviations are explicitly documented with a reason. The changed files and behavior remain within the intended scope.
-
-**Fail:** The diff contradicts the plan, introduces unexplained changes, or omits a required planned change without explanation.
-
-**Unclear:** The plan, diff, or necessary deviation information is missing or insufficient to compare.
-
-## Check 3: Reproduction and Test Evidence
-
-**Pass:** The package includes concrete evidence of the original behavior and relevant verification after the change. Commands, test cases, and results are stated clearly enough to evaluate whether the fix works.
-
-**Fail:** The evidence demonstrates that the fix does not work, relevant tests failed without resolution, or the PR falsely claims tests passed.
-
-**Unclear:** Test evidence is absent, too vague to verify, or does not establish the claimed outcome.
-
-## Check 4: PR Description Accuracy
-
-**Pass:** The PR title and description accurately explain the change, its purpose, testing, and known limitations. Claims are consistent with the diff and evidence.
-
-**Fail:** The description makes claims contradicted by the diff or test results, hides significant limitations, or promises functionality not implemented.
-
-**Unclear:** The title or description is missing essential information needed to verify the submission.
-
-## Check 5: Scope and Repository Standards
-
-**Pass:** The change respects the applicable issue constraints and any repository standards explicitly included in the package. Unrelated modifications are absent or justified.
-
-**Fail:** The change violates an explicitly stated repository requirement, or contains unrelated modifications that are not justified.
-
-**Unclear:** A relevant required standard is identified but compliance cannot be verified.
-
-Do not invent repository standards that are not provided in the evidence.
-
-## Check 6: AI Use Disclosure
-
-**Pass:** The PR description explicitly states whether AI assistance was used and, if used, describes its role without making unsupported claims.
-
-**Fail:** The package contains evidence of AI assistance that the PR description falsely denies, or its disclosure contradicts other evidence.
-
-**Unclear:** The PR description does not state whether AI assistance was used.
+| Check | What to examine | Passing condition | Weight |
+| --- | --- | --- | --- |
+| Issue Alignment | Issue statement, requirements, PR description, and diff | **Pass:** The PR identifies the issue and directly addresses its requirements without unjustified unrelated changes. **Fail:** The change addresses a different issue, contradicts its requirements, or introduces unjustified unrelated work. **Unclear:** The issue or its requirements cannot be identified from the evidence. | required |
+| Plan and Diff Alignment | Accepted implementation plan, code diff, and documented deviations | **Pass:** The diff implements the plan, and any deviations are documented and justified. **Fail:** The diff contradicts the plan, introduces unexplained changes, or omits required work without explanation. **Unclear:** The plan, diff, or deviation evidence is insufficient for comparison. | required |
+| Reproduction and Test Evidence | Reproduction steps, before-and-after results, commands, and test output | **Pass:** Concrete evidence demonstrates the original problem and verifies the change through relevant tests. **Fail:** Tests demonstrate an unresolved failure, the fix does not work, or the PR falsely claims tests passed. **Unclear:** Evidence is missing, unverifiable, or insufficient to establish the outcome. | required |
+| PR Description Accuracy | PR title, description, diff, testing claims, and limitations | **Pass:** The description accurately represents the implemented change, testing, and known limitations. **Fail:** Claims contradict the diff or results, significant limitations are concealed, or unimplemented behavior is promised. **Unclear:** Essential information is missing. | required |
+| Scope and Repository Standards | Issue constraints, contribution rules, repository instructions, PR template, and changed files | **Pass:** The PR complies with applicable documented standards and remains within justified scope. **Fail:** The PR violates an explicit repository requirement or includes unjustified unrelated changes. **Unclear:** An applicable requirement is identified but compliance cannot be established. Do not invent standards absent from the evidence. | required |
+| AI Use Disclosure | Repository AI-use policy, PR disclosure, and supplied evidence of AI assistance | **Pass:** The PR follows the repository's applicable AI-use and disclosure requirements. When disclosure is required, the PR provides it accurately. When no disclosure requirement applies, absence of disclosure alone is not a failure. **Fail:** The PR omits or contradicts an explicitly required disclosure, falsely denies evidenced AI assistance, or violates an explicit AI-use prohibition. **Unclear:** An applicable policy or potential violation is identified but the supplied evidence cannot establish compliance. Do not infer AI use merely from a missing disclosure or invent a repository policy. | required |
 
 ## Verdict Rule
 
-Evaluate all six checks for every package.
+Evaluate all six required checks for every package.
 
-- Return `accept` only when all six checks receive `pass`.
-- Return `reject` when any check receives `fail` or `unclear`.
-- Missing or unverifiable evidence must not be treated as passing.
+- Return `accept` only when all six checks pass.
+- Return `reject` if any required check fails or is unclear.
+- Missing or unverifiable evidence must not be treated as passing when needed to establish compliance.
 - Never issue a conditional acceptance or a third verdict.
 
-For each check, provide one evidence line quoting or identifying the exact package fact that determined the grade.
+For each check, provide one evidence line quoting or identifying the specific package fact supporting the grade.
 
 ## Evidence Interpretation
 
@@ -76,34 +38,6 @@ Evaluate whether the supplied evidence establishes each check's passing conditio
 
 Use the JSON schema defined in `SKILL.md`.
 
-The `checks` array must contain all six checks in the order listed above, using their exact names.
+The `checks` array must contain all six checks in the order listed in the table, using their exact names.
 
 The final fenced JSON block must be the last content in the response.
-
-## Evaluation checks
-
-| Check | What to examine | Passing condition | Weight |
-| --- | --- | --- | --- |
-| Issue Alignment | Issue context and proposed changes | The PR addresses the reported issue without unrelated changes. | required |
-| Plan and Diff Alignment | Accepted plan and actual code diff | The changes implement the plan without unexplained deviations. | required |
-| Reproduction and Test Evidence | Before-and-after results and tests | Evidence demonstrates the fix and relevant tests passing. | required |
-| PR Description Accuracy | PR title, description, and diff | The description accurately represents the implemented change and verification. | required |
-| Scope and Repository Standards | Repository rules and PR template | The PR follows applicable contribution requirements and template sections. | required |
-| AI Use Disclosure | Repository AI policy and PR disclosure | AI assistance is disclosed when required by repository policy. | required |
-
-Verdict rule: Return `accept` only when all six required checks pass. Return `reject` if any check fails or is unclear.
-
-## AI disclosure clarification
-
-For the AI Use Disclosure check, apply the following rules:
-
-- Pass when the repository explicitly requires AI-use disclosure and the PR provides the required disclosure.
-- Pass when the repository does not require AI-use disclosure and the PR does not include one.
-- Pass when the repository permits AI assistance and the PR accurately follows its stated disclosure policy.
-- Fail when the repository explicitly requires disclosure and the PR omits or contradicts it.
-- Fail when the repository explicitly prohibits AI-generated contributions and the PR violates that policy.
-- Do not assume AI was used merely because the PR does not mention AI.
-- Do not reject a PR solely because it lacks an AI disclosure when the repository does not require one.
-- If the supplied repository facts are insufficient to determine whether an applicable disclosure requirement was violated, grade unclear rather than inventing a requirement.
-
-This clarification applies to the AI Use Disclosure check wherever it appears in the rubric. It does not override an explicit repository policy.
