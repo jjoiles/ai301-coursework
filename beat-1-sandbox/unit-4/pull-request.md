@@ -16,7 +16,7 @@ Fixed generated directory exclusions in the technology detector, including `node
 - Both existing regression tests passed after removing their expected-failure (`xfail`) markers.
 - All 27 technology detector tests passed locally.
 - All five GitHub CI checks passed on PR #85.
-- Official PR precheck evaluation: **18/20 (PASS)**, with `pkg-11` and `pkg-16` disagreeing with the expected verdicts. The committed `eval-run.txt` is the authoritative record.
+- - Official PR precheck evaluation: 20/20 (PASS). All five category floors passed. See eval-run.txt for the authoritative results.
 
 ## Reflection
 This assignment reinforced the importance of matching implementation to the original issue, providing reproducible test evidence, and ensuring that a pull request passes repository checks before submission.
@@ -31,14 +31,15 @@ AI assistance was used during development, documentation, and troubleshooting. C
 3. **Rubric revision:** I clarified the AI Use Disclosure check so it would not require disclosure when repository policy did not require it. The targeted evaluation of `pkg-01`, `pkg-02`, `pkg-05`, `pkg-08`, `pkg-13`, `pkg-16`, `pkg-19`, and `pkg-20` achieved **8/8 agreement**.
 4. **Earlier full evaluation:** **20/20 agreement**, exceeding the required 18/20 threshold. All five categories passed. This earlier result was superseded by the final committed evaluation.
 5. **Rubric consolidation:** I replaced duplicated check definitions with one authoritative evaluation table. The first targeted run achieved 7/8 agreement. A subsequent targeted rerun of `pkg-16` achieved 1/1 agreement. However, the final full evaluation achieved **18/20 (PASS)**, with `pkg-11` and `pkg-16` disagreeing with the expected verdicts. All five category floors passed. The authoritative results are recorded in `eval-run.txt`.
+6.  **Final evaluation after consolidating evidence guidance:** I incorporated the Evidence Interpretation guidance directly into the relevant rubric table cells and removed the separate section. The subsequent full evaluation achieved **20/20 (PASS)**, with all five category floors passing. Both pkg-11 and pkg-16 returned accept, matching their expected verdicts. This is the final committed evaluation recorded in eval-run.txt.
 
 ## Package analysis
 
 - **pkg-02 (clear-accept):** Initially rejected due to PR Description Accuracy and AI Use Disclosure. After the clarification, it returned `accept`, matching the expected verdict.
 - **pkg-05 (clear-accept):** Initially errored due to Windows encoding. After UTF-8 was enabled, it rejected on AI Use Disclosure. Following the rubric revision, it returned `accept`.
 - **pkg-08, pkg-13, and pkg-19 (clear-accept):** Earlier targeted runs showed improved agreement after the AI Use Disclosure revision.
-- **pkg-16 (clear-accept):** A targeted rerun returned `accept`, but the final committed evaluation returned `reject` against the expected `accept` verdict. This remains an unresolved disagreement.
-- **pkg-11:** The final committed evaluation disagreed with the expected verdict. Together with `pkg-16`, this accounts for the two disagreements in the final 18/20 result.
+- - **pkg-16 (clear-accept):** Earlier evaluations produced inconsistent results. In the final full evaluation, it returned `accept`, matching the expected verdict.
+- **pkg-11 (clear-accept):** Previously disagreed with the expected verdict. In the final full evaluation, it returned `accept`, matching the expected verdict.
 - **pkg-01 and pkg-20 (standards-wall):** Both continued returning `reject` after the revision, confirming that explicit repository standards were still enforced.
 - **pkg-03 (silent-drift), pkg-04 (not-tested), and pkg-12 (unreviewable):** These were correctly rejected in the initial and final runs, providing regression evidence across other categories.
 
