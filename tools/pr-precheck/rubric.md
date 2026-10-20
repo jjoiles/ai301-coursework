@@ -68,6 +68,10 @@ Evaluate all six checks for every package.
 
 For each check, provide one evidence line quoting or identifying the exact package fact that determined the grade.
 
+## Evidence Interpretation
+
+Evaluate whether the supplied evidence establishes each check's passing condition, rather than requiring every possible form of supporting documentation. A documented, justified deviation or explicitly deferred behavior is not automatically a plan mismatch. Reproduction transcripts showing the corrected behavior, relevant passing tests, and a valid control case can establish sufficient test evidence without additional CI logs unless the repository explicitly requires them. A PR description may accurately identify limitations or deferred work without failing description accuracy. Do not mark a check unclear solely because the evidence uses a different presentation format when the supplied facts are sufficient to evaluate the requirement.
+
 ## Output
 
 Use the JSON schema defined in `SKILL.md`.
