@@ -75,3 +75,31 @@ Use the JSON schema defined in `SKILL.md`.
 The `checks` array must contain all six checks in the order listed above, using their exact names.
 
 The final fenced JSON block must be the last content in the response.
+
+## Evaluation checks
+
+| Check | What to examine | Passing condition | Weight |
+| --- | --- | --- | --- |
+| Issue Alignment | Issue context and proposed changes | The PR addresses the reported issue without unrelated changes. | required |
+| Plan and Diff Alignment | Accepted plan and actual code diff | The changes implement the plan without unexplained deviations. | required |
+| Reproduction and Test Evidence | Before-and-after results and tests | Evidence demonstrates the fix and relevant tests passing. | required |
+| PR Description Accuracy | PR title, description, and diff | The description accurately represents the implemented change and verification. | required |
+| Scope and Repository Standards | Repository rules and PR template | The PR follows applicable contribution requirements and template sections. | required |
+| AI Use Disclosure | Repository AI policy and PR disclosure | AI assistance is disclosed when required by repository policy. | required |
+
+Verdict rule: Return `accept` only when all six required checks pass. Return `reject` if any check fails or is unclear.
+
+## AI disclosure clarification
+
+For the AI Use Disclosure check, apply the following rules:
+
+- Pass when the repository explicitly requires AI-use disclosure and the PR provides the required disclosure.
+- Pass when the repository does not require AI-use disclosure and the PR does not include one.
+- Pass when the repository permits AI assistance and the PR accurately follows its stated disclosure policy.
+- Fail when the repository explicitly requires disclosure and the PR omits or contradicts it.
+- Fail when the repository explicitly prohibits AI-generated contributions and the PR violates that policy.
+- Do not assume AI was used merely because the PR does not mention AI.
+- Do not reject a PR solely because it lacks an AI disclosure when the repository does not require one.
+- If the supplied repository facts are insufficient to determine whether an applicable disclosure requirement was violated, grade unclear rather than inventing a requirement.
+
+This clarification applies to the AI Use Disclosure check wherever it appears in the rubric. It does not override an explicit repository policy.
