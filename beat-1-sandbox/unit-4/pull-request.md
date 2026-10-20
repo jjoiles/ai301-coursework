@@ -30,6 +30,7 @@ AI assistance was used during development, documentation, and troubleshooting. C
 2. **Encoding correction:** After enabling Python UTF-8, `pkg-05` ran but returned `reject` instead of the expected `accept` (0/1 agreement).
 3. **Rubric revision:** I clarified the AI Use Disclosure check so it would not require disclosure when repository policy did not require it. The targeted evaluation of `pkg-01`, `pkg-02`, `pkg-05`, `pkg-08`, `pkg-13`, `pkg-16`, `pkg-19`, and `pkg-20` achieved **8/8 agreement**.
 4. **Final full evaluation:** **20/20 agreement**, exceeding the required 18/20 threshold. All five categories passed. The official output was saved to `eval-run.txt`.
+5. **Rubric consolidation:** I replaced the duplicated check definitions with one authoritative evaluation table to address instructor feedback. The first targeted run achieved 7/8 agreement. Further investigation identified `pkg-16` as a false rejection. After clarifying how sufficient evidence should be interpreted, a targeted rerun of `pkg-16` achieved 1/1 agreement. The final full evaluation achieved **18/20 (PASS)**, meeting the required threshold and all five category floors. The updated official results are recorded in `eval-run.txt`.
 
 ## Package analysis
 
@@ -55,4 +56,4 @@ When policy evidence is insufficient, the tool should avoid inventing requiremen
 
 The change could weaken enforcement of explicit repository standards, so I reran `pkg-01` and `pkg-20` as **standards-wall canaries**. Both remained correctly rejected.
 
-The final 20-package evaluation confirmed that the revised rubric still agreed with every expected verdict. A remaining limitation is that the tool depends on the repository evidence provided and cannot independently prove undisclosed AI use.
+The final 20-package evaluation achieved 18/20 agreement and passed all five category floors. A remaining limitation is that the tool depends on the repository evidence provided and cannot independently prove undisclosed AI use.
