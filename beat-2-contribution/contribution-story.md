@@ -1,282 +1,181 @@
-# Contribution: [Issue Title]
+Contribution: Fix Tech Detector Generated Directory Exclusions
+Path: beat-2-contribution/contribution-story.md
+
+Contribution Number: [1]
+Student: Jean Joiles
+GitHub Username: jjoiles
+Issue: Issue #57 (PathReview)
+Pull Request: PR #85
+Toolkit
+Each story section below ends with a Toolkit block. The tools named here are the ones my repository evidence supports: issue-select, repro-check, plan-check, and pr-precheck. I do not claim work on other tools without evidence.
+
+Unit 5: issue-select, an issue-suitability rubric tested and refined (September 28–29, 2026)
+
+I built issue-select to judge a candidate issue on five criteria: maintainer activity, repository activity, newcomer-sized scope, issue availability, and contribution policy. Its first evaluation scored 17/20, and after refinement it scored 18/20 (PASS). The remaining disagreements were issue-15 (expected reject, tool accepted) and issue-19 (expected accept, tool rejected on scope). I kept the conservative scope requirement rather than loosening it to match the expected answer.
+
+Unit 6: repro-check, a reproduction-package check (October 5, 2026)
+
+repro-check judges whether a reproduction package has enough information to investigate and verify a reported issue. An early evaluation reached 12/17 scored agreements and hit three Windows encoding errors, and the evaluator was sometimes too strict about missing details. I revised the guidance to separate essential missing information from harmless omissions that an experienced developer can infer. The result was 18/20, then 19/20 (PASS) on October 5. The remaining disagreement was pkg-05, which the tool rejected for reproduction steps when acceptance was expected.
+
+Unit 7: plan-check, an implementation-plan check (October 12, 2026)
+
+plan-check evaluates whether a plan has an evidence-based diagnosis, bounded scope, actionable steps, observable tests, and an honest account of uncertainty. Its October 12 evaluation scored 19/20 (PASS). The one disagreement was pkg-14, which it rejected over concerns about diagnosis strength and treatment of risks. I kept the requirement that verified observations be distinguished from hypotheses rather than relaxing it.
+
+Unit 8: pr-precheck, a pull-request readiness rubric (October 20, 2026)
+
+pr-precheck reviews six areas: issue alignment, plan-and-diff alignment, reproduction and testing evidence, PR description accuracy, scope and repository standards, and AI-use disclosure. Earlier evaluations scored 14/19 and 18/20, with Windows encoding problems and inconsistent judgments about AI disclosure and overlapping criteria. I tied the disclosure check to documented repository policy and consolidated overlapping checks. The final result was 20/20 (PASS), with all five evaluated category groups passing.
+Why I Chose This Issue
+I was given PathReview Issue #57, where generated and dependency files were being counted when the technology detector decided a project's primary programming language. The issue had a defined scope, and regression tests for the behavior already existed in the repository. It also gave me a chance to investigate Python path handling and to practice test-driven bug fixing. I documented my intent to work on it in a claim comment.
+
+Claim comment: Issue #57 claim comment
+
+Issue selection context: Issue #57 was assigned to me rather than discovered through my own issue search. I developed and evaluated issue-select as part of the course, but I do not remember its verdict on Issue #57 and do not have evidence of a specific scan of that issue. I therefore cannot claim that the tool selected it for me.
+
+issue-select is not perfect. Its final evaluation was 18/20, and the remaining disagreements show that judging whether an issue is genuinely newcomer-sized is partly subjective. I treat its verdict as decision support, not a replacement for my own reading of the issue.
+
+Toolkit
+- Tool: issue-select, which checks an issue against five criteria: maintainer activity, repository activity, newcomer-sized scope, issue availability, and contribution policy. Requiring all five guards against picking an abandoned, oversized, unavailable, or policy-blocked issue just because it carries a beginner-friendly label.
+- What it produced: an 18/20 (PASS) evaluation on its test cases. The evaluation score is verified; the specific verdict on Issue #57 remains unverified.
+- Difficulties: two remaining disagreements, issue-15 (expected reject, tool accepted) and issue-19 (expected accept, tool rejected on scope).
+- What changed: the first evaluation scored 17/20, and refinement raised it to 18/20. I kept the conservative scope requirement rather than weakening it to match issue-19's expected answer.
+Understanding the Issue
+Problem Description
 
-Path: `beat-2-contribution/contribution-story.md`
+Generated and dependency files were included when the detector identified a repository's primary programming language, so files in directories like node_modules/ and build/ could outweigh the project's own source.
 
-This file is Assignment 5, and it is graded at the path above; a copy kept anywhere else in
-the repository is not read. **Keep every section header below under its exact name** — the
-format criteria grade exactly that. Your course repo link is the whole submission: no tool
-files and no evidence uploads are part of Assignment 5.
+Expected Behavior
 
-**Contribution Number:** [1]
-**Student:** [Student name]
-**GitHub Username:** [your GitHub username, exactly as it appears on your profile - no @, no
-profile URL. Your comments upstream are identified by this name.]
-**Issue:** [GitHub issue link]
-**Pull Request:** [GitHub PR link, once opened]
+Files under node_modules/ and build/ should be excluded, so the detector identifies Python as the primary language for the project in the reproduction case.
 
-One repository, built across units 5 to 8, telling the whole story of your real
-contribution. Fill it as you work, not at the end — the sections below ask for evidence that
-is far easier to write down as it happens than to reconstruct in the last weekend.
+Current Behavior
 
-Contribution Number stays `[1]` unless you make more than one contribution this term; it
-just numbers them.
+Before the fix, the detector reported JavaScript.
 
----
+Affected Components
+- agent/tools/tech_detector.py, particularly _should_skip_file()
+- tests/unit/test_tech_detector.py
+The root cause was that exclusion checks such as /node_modules/ did not match repository-relative paths that begin with node_modules/, because those paths have no leading slash.
 
-## Toolkit
+Toolkit
+- Tool: Direct source-code inspection and the existing test_tech_detector.py regression tests; no separate toolkit tool is verified for this phase.
+- What it produced: Identified _should_skip_file() and its leading-slash exclusion-pattern mismatch as the cause of the observed language-detection error.
+- Difficulties: Repository-relative paths did not match the original slash-prefixed exclusion patterns.
+- What changed: The subsequent implementation plan specified normalized path components instead of substring matching.
+Reproduction Process
+Environment Setup
+- Development environment: GitHub Codespaces (confirmed from my recollection).
+- Python version: 3.12 (confirmed from my recollection).
+- Repository setup: I cloned the repository and installed dependencies in Codespaces. I do not have the exact installation commands recorded here; the reproducible Python and pytest commands appear below.
+- Setup and package installation commands: Not verified. The recorded commands were run from the PathReview repository root using Python and pytest; add your actual clone, environment, and dependency-install commands if available.
+- Challenges and how I solved them: The reproduction exposed a path-matching failure. Environment-specific setup challenges are not documented in the recovered evidence.
+Steps to Reproduce
+1. Run this command from the repository root:
+python -c "from agent.tools.tech_detector import TechDetector; t=TechDetector(); files=['main.py','core/app.py','node_modules/lib/util.js','node_modules/x/a.js','node_modules/y/b.js','build/bundle.js','build/vendor.js']; print(t.execute({'files': files}).data['primary_language'])"
+2. Observed result before the fix: JavaScript, which is incorrect.
+3. Result after the fix: Python, which is the expected result.
+Reproduction Evidence
+- Commit showing reproduction: No separate reproduction-only commit verified. Fix commit 6a6c58f contains the implemented change; the upstream reproduction comment records the before-fix evidence.
+- Reproduction comment: Reproduction evidence comment
+- Screenshots/logs: The Unit 7 plan-and-implement record contains the before-and-after console output and pytest results. No screenshot is necessary for this backend-only fix.
+- My findings: The two existing regression tests, test_node_modules_excluded and test_build_directory_excluded, both failed before the fix when run with --runxfail. That confirmed the bug independently of my one-line reproduction command.
+Toolkit
+- Tool: repro-check, which checks whether a reproduction package contains the steps, environment, actual behavior, expected behavior, and repository-specific requirements needed to verify an issue.
+- What it produced: a 19/20 (PASS) evaluation on its test cases.
+- Difficulties: an early evaluation of 12/17 with three Windows encoding errors, and a tendency to be too strict about missing details. The remaining disagreement was pkg-05.
+- What changed: I revised the guidance so essential missing information fails a package but minor details an experienced developer can infer do not.
+Solution Approach
+Analysis
 
-Every story section below, from Why I Chose This Issue through Pull
-Request, ends with a Toolkit block: which tool did that phase's work
-and how you used it, what it produced, what difficulties or
-shortcomings it presented, and what you changed or would change
-because of them. Together the blocks are the thread the rubric's
-Toolkit points read, and they are the raw material for your unit-9
-portfolio, so keep them current as you work rather than
-reconstructing them later.
+_should_skip_file() in agent/tools/tech_detector.py used substring checks such as /node_modules/. Paths in the file list are repository-relative, so a path like node_modules/lib/util.js does not start with a slash and the check never matched. Generated files were therefore counted toward the language totals.
 
-A Toolkit block looks like this (copy it into each story section and
-fill it there):
+Proposed Solution
 
-```text
-**Toolkit**
+Normalize path separators and check directory components instead of relying on substring matching. I am deliberately not changing existing exclusions or any unrelated language-detection behavior.
 
-- Tool: [which tool did this phase's work, and how you used it]
-- What it produced: [described in a sentence or a short excerpt]
-- Difficulties: [what fought you or fell short, or "none met"]
-- What changed: [the patch, revision, or workaround, what you would
-  update, or "nothing"]
-```
+Implementation Plan
+1. Modify _should_skip_file() in agent/tools/tech_detector.py.
+2. Normalize path separators and evaluate directory components rather than using substring matching.
+3. Preserve existing exclusions and avoid unrelated language-detection changes.
+4. Enable the existing regression tests and verify the results.
+The fix was developed on branch fix/57-exclude-generated-files, commit 6a6c58f.
 
-This section also keeps one short dated entry per week of tool work,
-starting below: what you built or changed that week, what broke, and
-what you changed because of it. The blocks tell the story where it
-happened; these entries are the toolkit's own timeline.
+Implementation plan evidence: Implementation plan comment
 
-All four entries are graded. Keep every heading below, and fill each
-one in the week it belongs to.
+Deviations: No departure from the posted plan is documented in the recovered implementation record. The existing regression tests were enabled by removing their xfail markers; no new regression tests were added.
 
-**Unit 5: [one line on the tool work]**
+Toolkit
+- Tool: plan-check, which evaluates whether a plan has an evidence-based diagnosis, bounded scope, actionable steps, observable tests, and an accurate account of uncertainty.
+- What it produced: a 19/20 (PASS) evaluation on its test cases on October 12, 2026.
+- Difficulties: it rejected pkg-14 (expected accept) over concerns about diagnosis strength and treatment of risks.
+- What changed: I kept the requirement that verified observations be distinguished from hypotheses.
+Testing Strategy
+The two regression tests, test_node_modules_excluded and test_build_directory_excluded, target this specific bug. Before the fix, both failed when run with --runxfail. After the fix, both pass. I also re-ran the reproduction command, which changed from JavaScript to Python.
 
-[2-4 sentences: what you built (the scout, your strategy), what broke
-or fell short, what changed because of it.]
+The complete detector test suite checks that the change did not break other detector behavior:
+python -m pytest tests/unit/test_tech_detector.py -q
+27 passed in 0.24s
+Verification	Before	After
+Generated-directory regression tests	2 failed	2 passed
+Primary-language detection	JavaScript	Python
+Complete detector test suite	—	27 passed
+Pull request CI	—	5 checks passed
 
-**Unit 6: [one line on the tool work]**
 
-[2-4 sentences: the voice-guard, the repo-memory file. What broke or
-fell short, and what changed because of it. "Nothing broke" counts when
-it is true - say how you know.]
+Toolkit
+- Tool: pytest, run directly. It is not one of my toolkit tools.
+- What it produced: 27 passed in 0.24s, plus the 2 regression tests flipping from failed to passed.
+- Difficulties: none recorded.
+- What changed: nothing.
+Implementation Notes
+September 28–29, 2026
 
-**Unit 7: [one line on the tool work]**
+Issue selection and initial tool evaluation. issue-select improved from 17/20 to 18/20 (PASS).
 
-[2-4 sentences: the ship-gate and your gate manifest. What it produced
-on your real branch, what fought you, what changed because of it.]
+October 5, 2026
 
-**Unit 8: [one line on the tool work]**
+Reproduction documentation and test evidence. repro-check reached 19/20 (PASS) after earlier encoding problems.
 
-[2-4 sentences: the PR-monitor and your playbook. What it read, what it
-drafted, what you did with the draft.]
+October 12, 2026
 
----
+Implementation plan, path-filtering fix, and successful tests. plan-check scored 19/20 (PASS). I did not write new regression tests. I enabled the two existing tests by removing their expected-failure (xfail) markers.
 
-## Why I Chose This Issue
+October 20, 2026
 
-[1-2 paragraphs in your own words: how you searched, what your scan
-surfaced, what your scout's verdict said, why this issue fits your
-profile, and what you hope to learn. If your scout's verdict on it
-was reject and you chose it anyway, say so here and say why; choosing
-against your own tool silently is what loses points. Close with an
-honest read of the tool itself: where the scout fell short on a real
-wild search and what you changed or would change, or what convinced
-you it held up. **Record the link to your claim comment in this section too.**
-Not claimed yet? Write `claim pending` and today's date where the link goes,
-and add the link the moment your claim lands.]
+Pull request preparation, final pr-precheck evaluation (20/20, PASS), and submission of PR #85.
 
-**Toolkit**
+Toolkit
+- Tool: plan-check, used to evaluate the implementation plan followed by the fix. No additional toolkit tool for the implementation log was verified.
+- What it produced: the evaluated plan described above.
+- Difficulties: see the Solution Approach block (pkg-14).
+- What changed: nothing further recorded.
+Pull Request
+PR Link: PR #85
 
-- Tool: issue-scout (your scout: your search strategy, your rubric),
-  and how you used it
-- What it produced: [the scan and its verdict on this issue, described]
-- Difficulties: [where it fell short, or "none met" if none did]
-- What changed: [what you patched or would update, or "nothing"]
+PR Description: The PR, titled "Fix tech detector generated directory exclusions," documents the fix, the existing regression tests that were enabled, 27 passing local tests, five passing CI checks, and an AI-use disclosure.
 
----
+Maintainer Feedback:
+- November 16, 2026: no maintainer feedback verified; PR #85 remained open.
+Status: Awaiting review. The PR was open and awaiting maintainer review at last verification.
 
-## Understanding the Issue
+Toolkit
+- Tool: pr-precheck, which reviews issue alignment, plan-and-diff alignment, reproduction and testing evidence, PR description accuracy, scope and repository standards, and AI-use disclosure.
+- What it produced: a final 20/20 (PASS) evaluation, with clear-accept 7/7, not-tested 4/4, silent-drift 4/4, standards-wall 2/2, and unreviewable 3/3.
+- Difficulties: the initial evaluation hit Windows encoding problems and rubric disagreements, including inconsistent judgments about AI-use disclosure and overlapping criteria. Earlier scores were 14/19 and 18/20.
+- What changed: I tied the disclosure check to documented repository policy instead of assuming disclosure is universally required, and consolidated overlapping checks.
+Learnings and Reflections
+Technical Skills Gained
 
-**Problem Description**
+I learned that repository-relative paths behave differently from absolute paths when matching directory names: a check for /node_modules/ cannot match a path that starts with node_modules/. Checking normalized directory components is more reliable than substring matching. I also practiced using existing xfail regression tests as a specification, enabling them and confirming they fail before the fix and pass after.
 
-[In your own words, what is broken or missing?]
+Challenges Overcome
 
-**Expected Behavior**
+The failing regression tests helped isolate the root cause: they failed for the generated-directory cases only, which pointed to the exclusion check in _should_skip_file() instead of the language-counting logic. On the tool side, Windows encoding errors and evaluation disagreements (issue-15, issue-19, pkg-05, pkg-14) pushed me to write more precise acceptance criteria.
 
-[What should happen?]
+What I'd Do Differently Next Time
 
-**Current Behavior**
-
-[What actually happens?]
-
-**Affected Components**
-
-[Which parts of the codebase are involved?]
-
-**Toolkit**
-
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
-
----
-
-## Reproduction Process
-
-**Environment Setup**
-
-[What a stranger would need to stand this up: your operating system,
-the relevant versions (language, runtime, package manager, the project
-itself), and how you set the project up. Then the challenges you faced
-and how you solved them, or that none came up.]
-
-**Steps to Reproduce**
-
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
-
-**Reproduction Evidence**
-
-- **Commit showing reproduction:** [link to commit in your fork]
-- **Screenshots/logs:** [if applicable]
-- **My findings:** [what you discovered during reproduction; an
-  honest, evidenced cannot-reproduce that led you to re-pick or ask
-  the maintainer belongs here and costs you nothing]
-
-**Toolkit**
-
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
-
----
-
-## Solution Approach
-
-**Analysis**
-
-[Your analysis of the root cause: what is causing the issue, traced
-to the files and functions involved.]
-
-**Proposed Solution**
-
-[High-level description of your fix approach, and what you are
-deliberately NOT changing.]
-
-**Implementation Plan**
-
-1. [Modify file X to do Y]
-2. [Add or change Z]
-3. [Update tests]
-
-[Record deviations here as they happen: what changed mid-build and
-why. A recorded deviation is honest work; silent drift is not.]
-
-**Toolkit**
-
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
-
----
-
-## Testing Strategy
-
-[What observable checks prove the fix: your reproduction steps re-run
-against the built change (before and after), and the repo's own test
-suite or checks with the outcome shown. "Tests pass" with nothing
-observable named is not a strategy.]
-
-**Toolkit**
-
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
-
----
-
-## Implementation Notes
-
-[A running log, added to as you work. Date each entry. What you
-built, decisions you made when you made them, wrong turns included.]
-
-**[Date]**
-
-[Entry]
-
-**[Date]**
-
-[Entry]
-
-**Toolkit**
-
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
-
----
-
-## Pull Request
-
-**PR Link:** [GitHub PR URL when opened]
-
-**PR Description:** [what the PR says; much of the content above
-adapts into it]
-
-**Maintainer Feedback:**
-
-- [Date]: [feedback received, or "none yet"; silence is a normal
-  state and costs you nothing]
-- [Date]: [how you addressed it]
-
-**Status:** [Awaiting review / Iterating / Merged / Closed. The
-status is a fact you record, never a grade: the PR is graded as
-opened.]
-
-**Toolkit**
-
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
-
----
-
-## Learnings and Reflections
-
-**Technical Skills Gained**
-
-[What you learned technically, named concretely.]
-
-**Challenges Overcome**
-
-[What was hard and how you solved it; point at the real events, the
-Toolkit blocks above are full of them.]
-
-**What I'd Do Differently Next Time**
-
-[Reflection on your process.]
-
----
-
-## Resources Used
-
-[What actually helped, not a reading list. List things this story
-already shows you using: the doc you followed to set the environment
-up, the thread that explained the bug, the person who answered you.
-One real entry beats ten plausible ones.]
-
-- [Link to documentation that helped]
-- [Discussion, issue, or post that helped]
+The disagreements taught me that vague criteria, such as "newcomer-sized" or "essential" missing information, produce inconsistent verdicts, so I would define them more concretely from the start. I would also test the tools against real repository cases, such as ambiguous scopes, incomplete reproduction evidence, and PRs whose descriptions differ from their code, instead of relying only on my own test cases.
+Resources Used
+- PathReview Issue #57
+- Pull Request #85
+- Unit 7 implementation documentation
+- Unit 8 pull request documentation
