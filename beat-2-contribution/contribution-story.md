@@ -1,13 +1,11 @@
 Contribution: Fix Tech Detector Generated Directory Exclusions
-Path: beat-2-contribution/contribution-story.md
-
-Contribution Number: [1]
+Contribution Number: 1
 Student: Jean Joiles
 GitHub Username: jjoiles
 Issue: Issue #57 (PathReview)
 Pull Request: PR #85
 Toolkit
-Each story section below ends with a Toolkit block. The tools named here are the ones my repository evidence supports: issue-select, repro-check, plan-check, and pr-precheck. I do not claim work on other tools without evidence.
+Each story section below ends with a Toolkit block. These are the four tools supported by my earlier toolkit evaluation records (labeled Units 5–8 here; the linked repository evidence is under beat-1-sandbox/unit-1 through unit-4). I have not verified separate Unit 9–12 artifacts. The tools are: issue-select, repro-check, plan-check, and pr-precheck. I do not claim work on other tools without evidence.
 
 Unit 5: issue-select, an issue-suitability rubric tested and refined (September 28–29, 2026)
 
@@ -25,16 +23,16 @@ Unit 8: pr-precheck, a pull-request readiness rubric (October 20, 2026)
 
 pr-precheck reviews six areas: issue alignment, plan-and-diff alignment, reproduction and testing evidence, PR description accuracy, scope and repository standards, and AI-use disclosure. Earlier evaluations scored 14/19 and 18/20, with Windows encoding problems and inconsistent judgments about AI disclosure and overlapping criteria. I tied the disclosure check to documented repository policy and consolidated overlapping checks. The final result was 20/20 (PASS), with all five evaluated category groups passing.
 Why I Chose This Issue
-I was given PathReview Issue #57, where generated and dependency files were being counted when the technology detector decided a project's primary programming language. The issue had a defined scope, and regression tests for the behavior already existed in the repository. It also gave me a chance to investigate Python path handling and to practice test-driven bug fixing. I documented my intent to work on it in a claim comment.
+I was assigned PathReview Issue #57, where generated and dependency files were being counted when the technology detector decided a project's primary programming language. The issue had a defined scope, and regression tests for the behavior already existed in the repository. It also gave me a chance to investigate Python path handling and to practice test-driven bug fixing. I documented my intent to work on it in a claim comment.
 
 Claim comment: Issue #57 claim comment
 
-Issue selection context: Issue #57 was assigned to me rather than discovered through my own issue search. I developed and evaluated issue-select as part of the course, but I do not remember its verdict on Issue #57 and do not have evidence of a specific scan of that issue. I therefore cannot claim that the tool selected it for me.
+Issue selection context: Issue #57 was assigned to me rather than discovered through my own issue search. I developed and evaluated issue-select as part of the course, but I do not remember its verdict on Issue #57 and do not have evidence of a specific scan of that issue. I therefore cannot claim that the tool selected it for me. My decision to proceed was based on the specific and testable problem, the existing regression tests, and the opportunity to investigate Python path handling. The lack of a saved issue-specific scout verdict limits what I can report about that tool for this issue.
 
 issue-select is not perfect. Its final evaluation was 18/20, and the remaining disagreements show that judging whether an issue is genuinely newcomer-sized is partly subjective. I treat its verdict as decision support, not a replacement for my own reading of the issue.
 
 Toolkit
-- Tool: issue-select, which checks an issue against five criteria: maintainer activity, repository activity, newcomer-sized scope, issue availability, and contribution policy. Requiring all five guards against picking an abandoned, oversized, unavailable, or policy-blocked issue just because it carries a beginner-friendly label.
+- Tool: issue-select. I developed and evaluated it as a suitability rubric; I cannot verify that I ran it on assigned Issue #57. It checks five criteria: maintainer activity, repository activity, newcomer-sized scope, issue availability, and contribution policy. Requiring all five guards against picking an abandoned, oversized, unavailable, or policy-blocked issue just because it carries a beginner-friendly label.
 - What it produced: an 18/20 (PASS) evaluation on its test cases. The evaluation score is verified; the specific verdict on Issue #57 remains unverified.
 - Difficulties: two remaining disagreements, issue-15 (expected reject, tool accepted) and issue-19 (expected accept, tool rejected on scope).
 - What changed: the first evaluation scored 17/20, and refinement raised it to 18/20. I kept the conservative scope requirement rather than weakening it to match issue-19's expected answer.
@@ -66,20 +64,25 @@ Environment Setup
 - Development environment: GitHub Codespaces (confirmed from my recollection).
 - Python version: 3.12 (confirmed from my recollection).
 - Repository setup: I cloned the repository and installed dependencies in Codespaces. I do not have the exact installation commands recorded here; the reproducible Python and pytest commands appear below.
-- Setup and package installation commands: Not verified. The recorded commands were run from the PathReview repository root using Python and pytest; add your actual clone, environment, and dependency-install commands if available.
-- Challenges and how I solved them: The reproduction exposed a path-matching failure. Environment-specific setup challenges are not documented in the recovered evidence.
+- Dependency installation command (recorded in my GitHub reproduction comment): python -m pip install -e ".[dev]". I cloned the repository first, then ran the command from its root. The exact clone command is not preserved.
+- Challenges and how I solved them: The issue-specific tests were marked xfail, so I ran them with --runxfail to see their actual failures. Both failed before the fix, confirming the problem. No separate Codespaces setup failure was documented.
 Steps to Reproduce
-1. Run this command from the repository root:
+1. Clone and open the PathReview repository in Codespaces, then install dependencies with python -m pip install -e ".[dev]".
+2. Run this command from the repository root:
 python -c "from agent.tools.tech_detector import TechDetector; t=TechDetector(); files=['main.py','core/app.py','node_modules/lib/util.js','node_modules/x/a.js','node_modules/y/b.js','build/bundle.js','build/vendor.js']; print(t.execute({'files': files}).data['primary_language'])"
-2. Observed result before the fix: JavaScript, which is incorrect.
-3. Result after the fix: Python, which is the expected result.
+3. Observed result before the fix: JavaScript, which is incorrect.
+4. Result after the fix: Python, which is the expected result.
+5. Run the two regression tests before the fix with:
+python -m pytest tests/unit/test_tech_detector.py -k "test_node_modules_excluded or test_build_directory_excluded" -v --runxfail
+The reproduction comment records 2 failed, 25 deselected in 0.35s before implementation.
+
 Reproduction Evidence
 - Commit showing reproduction: No separate reproduction-only commit verified. Fix commit 6a6c58f contains the implemented change; the upstream reproduction comment records the before-fix evidence.
 - Reproduction comment: Reproduction evidence comment
 - Screenshots/logs: The Unit 7 plan-and-implement record contains the before-and-after console output and pytest results. No screenshot is necessary for this backend-only fix.
 - My findings: The two existing regression tests, test_node_modules_excluded and test_build_directory_excluded, both failed before the fix when run with --runxfail. That confirmed the bug independently of my one-line reproduction command.
 Toolkit
-- Tool: repro-check, which checks whether a reproduction package contains the steps, environment, actual behavior, expected behavior, and repository-specific requirements needed to verify an issue.
+- Tool: repro-check. I developed and evaluated this checker while documenting the reproduction. It checks whether a reproduction package contains the steps, environment, actual behavior, expected behavior, and repository-specific requirements needed to verify an issue.
 - What it produced: a 19/20 (PASS) evaluation on its test cases.
 - Difficulties: an early evaluation of 12/17 with three Windows encoding errors, and a tendency to be too strict about missing details. The remaining disagreement was pkg-05.
 - What changed: I revised the guidance so essential missing information fails a package but minor details an experienced developer can infer do not.
@@ -104,7 +107,7 @@ Implementation plan evidence: Implementation plan comment
 Deviations: No departure from the posted plan is documented in the recovered implementation record. The existing regression tests were enabled by removing their xfail markers; no new regression tests were added.
 
 Toolkit
-- Tool: plan-check, which evaluates whether a plan has an evidence-based diagnosis, bounded scope, actionable steps, observable tests, and an accurate account of uncertainty.
+- Tool: plan-check. I developed and evaluated it alongside my documented implementation plan. It evaluates whether a plan has an evidence-based diagnosis, bounded scope, actionable steps, observable tests, and an accurate account of uncertainty.
 - What it produced: a 19/20 (PASS) evaluation on its test cases on October 12, 2026.
 - Difficulties: it rejected pkg-14 (expected accept) over concerns about diagnosis strength and treatment of risks.
 - What changed: I kept the requirement that verified observations be distinguished from hypotheses.
@@ -129,7 +132,7 @@ Toolkit
 Implementation Notes
 September 28–29, 2026
 
-Issue selection and initial tool evaluation. issue-select improved from 17/20 to 18/20 (PASS).
+Initial issue-suitability tool evaluation; Issue #57 was assigned, not discovered by the tool. issue-select improved from 17/20 to 18/20 (PASS).
 
 October 5, 2026
 
@@ -151,14 +154,16 @@ Toolkit
 Pull Request
 PR Link: PR #85
 
-PR Description: The PR, titled "Fix tech detector generated directory exclusions," documents the fix, the existing regression tests that were enabled, 27 passing local tests, five passing CI checks, and an AI-use disclosure.
+PR Description: The PR #85, titled "Fix tech detector generated directory exclusions for issue 57," explicitly says Closes #57, linking it to the issue in the same upstream repository. Its description summarizes the directory-exclusion bug, the fix, the two existing tests enabled by removing xfail, and the local pytest tests/unit/test_tech_detector.py -v result of 27 passing tests. It also reports five passing GitHub Actions checks and discloses AI assistance for development guidance, troubleshooting, and documentation.
+
+PR Evidence and Scope: GitHub's Files changed tab shows exactly two changed files: agent/tools/tech_detector.py (path normalization and directory-component exclusion) and tests/unit/test_tech_detector.py (removal of the two xfail markers). No unrelated files were changed, and no new tests were added. The Checks tab contains the CI results.
 
 Maintainer Feedback:
 - November 16, 2026: no maintainer feedback verified; PR #85 remained open.
 Status: Awaiting review. The PR was open and awaiting maintainer review at last verification.
 
 Toolkit
-- Tool: pr-precheck, which reviews issue alignment, plan-and-diff alignment, reproduction and testing evidence, PR description accuracy, scope and repository standards, and AI-use disclosure.
+- Tool: pr-precheck. I developed and evaluated it during PR preparation, and checked the PR evidence against the same readiness criteria. It reviews issue alignment, plan-and-diff alignment, reproduction and testing evidence, PR description accuracy, scope and repository standards, and AI-use disclosure.
 - What it produced: a final 20/20 (PASS) evaluation, with clear-accept 7/7, not-tested 4/4, silent-drift 4/4, standards-wall 2/2, and unreviewable 3/3.
 - Difficulties: the initial evaluation hit Windows encoding problems and rubric disagreements, including inconsistent judgments about AI-use disclosure and overlapping criteria. Earlier scores were 14/19 and 18/20.
 - What changed: I tied the disclosure check to documented repository policy instead of assuming disclosure is universally required, and consolidated overlapping checks.
@@ -179,3 +184,6 @@ Resources Used
 - Pull Request #85
 - Unit 7 implementation documentation
 - Unit 8 pull request documentation
+- Claim comment by jjoiles
+- Reproduction steps and dependency-installation command
+- PR code diff
